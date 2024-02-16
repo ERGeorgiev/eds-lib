@@ -1,41 +1,38 @@
-﻿using System;
+﻿namespace EdsLibrary.Extensions;
 
-namespace EdsLibrary.Extensions
+public static partial class ConsoleExt
 {
-    public static partial class ConsoleExt
+    public static void ClearRows(int start, int end)
     {
-        public static void ClearRows(int start, int end)
+        string emptyLine = new string(' ', Console.BufferWidth);
+        for (int i = start; i <= end; i++)
         {
-            string emptyLine = new string(' ', Console.BufferWidth);
-            for (int i = start; i <= end; i++)
-            {
-                Console.SetCursorPosition(0, i);
-                Console.WriteLine(emptyLine);
-            }
+            Console.SetCursorPosition(0, i);
+            Console.WriteLine(emptyLine);
         }
+    }
 
-        public static double ScanDouble(string name)
+    public static double ScanDouble(string name)
+    {
+        double input;
+        do
         {
-            double input;
-            do
-            {
-                Console.Write($"Please enter a value for '{name}': ");
-            }
-            while (!double.TryParse(Console.ReadLine(), out input));
-
-            return input;
+            Console.Write($"Please enter a value for '{name}': ");
         }
+        while (!double.TryParse(Console.ReadLine(), out input));
 
-        public static int ScanInt(string name)
+        return input;
+    }
+
+    public static int ScanInt(string name)
+    {
+        int input;
+        do
         {
-            int input;
-            do
-            {
-                Console.Write($"Please enter a value for '{name}': ");
-            }
-            while (!int.TryParse(Console.ReadLine(), out input));
-
-            return input;
+            Console.Write($"Please enter a value for '{name}': ");
         }
+        while (!int.TryParse(Console.ReadLine(), out input));
+
+        return input;
     }
 }

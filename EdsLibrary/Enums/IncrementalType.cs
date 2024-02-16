@@ -1,8 +1,8 @@
-﻿namespace EdsLibrary.Extensions
+﻿namespace EdsLibrary.Extensions;
+
+public enum IncrementalType
 {
-    public enum IncrementalType
-    {
-        Increase,
-        Decrease
-    }
+    Increase,
+    Decrease
 }
+

@@ -1,8 +1,7 @@
-﻿namespace EdsLibrary.Extensions
+﻿namespace EdsLibrary.Extensions;
+
+public enum Scale
 {
-    public enum Scale
-    {
-        Scaled,
-        Unscaled
-    }
+    Scaled,
+    Unscaled
 }

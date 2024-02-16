@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Security.Principal;
 
-namespace EdsLibrary.Extensions
-{
-    public static partial class PropertyInfoExt
+namespace EdsLibrary.Extensions;
+
+public static partial class PropertyInfoExt
     {
         public static object GetId(this PropertyInfo property, object source)
         {
@@ -28,4 +25,3 @@ namespace EdsLibrary.Extensions
             return false;
         }
     }
-}

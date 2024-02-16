@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿namespace EdsLibrary.Extensions;
 
-namespace EdsLibrary.Extensions
-{
-    /// <summary>
-    /// Extension to the System.Math class.
-    /// </summary>
-    public static partial class MathExt
+/// <summary>
+/// Extension to the System.Math class.
+/// </summary>
+public static partial class MathExt
     {
         /// <summary>
         /// Removes sample outliers using Chauvenet's Criterion.
@@ -105,4 +101,3 @@ namespace EdsLibrary.Extensions
             return output;
         }
     }
-}

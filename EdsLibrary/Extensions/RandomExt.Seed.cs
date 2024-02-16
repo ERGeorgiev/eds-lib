@@ -1,64 +1,63 @@
 ﻿using System;
 
-namespace EdsLibrary.Extensions
+namespace EdsLibrary.Extensions;
+
+/// <summary>
+/// Extension to the System.Random class.
+/// </summary>
+public static partial class RandomExt
 {
+    private const int stringSeedMaxLength = 32;
+
     /// <summary>
-    /// Extension to the System.Random class.
+    /// Uses a seed to produce predictable results.
     /// </summary>
-    public static partial class RandomExt
+    /// <param name="seed">Will be turned into a numerical seed.</param>
+    public static void Seed(string seed)
     {
-        private const int stringSeedMaxLength = 32;
+        seed.Truncate(stringSeedMaxLength);
+        char[] seedCharacters = seed.ToCharArray();
+        int numericSeed = 0;
 
-        /// <summary>
-        /// Uses a seed to produce predictable results.
-        /// </summary>
-        /// <param name="seed">Will be turned into a numerical seed.</param>
-        public static void Seed(string seed)
+        for (int i = 0; i < seedCharacters.Length; i++)
         {
-            seed.Truncate(stringSeedMaxLength);
-            char[] seedCharacters = seed.ToCharArray();
-            int numericSeed = 0;
-
-            for (int i = 0; i < seedCharacters.Length; i++)
-            {
-                numericSeed += (int)char.GetNumericValue(seedCharacters[i]) * (i + 1);
-            }
-
-            Seed(numericSeed);
+            numericSeed += (int)char.GetNumericValue(seedCharacters[i]) * (i + 1);
         }
 
-        /// <summary>
-        /// Uses a seed to produce predictable results.
-        /// </summary>
-        /// <param name="seed">Will be turned into a numerical seed.</param>
-        public static void Seed(this Random random, string seed)
+        Seed(numericSeed);
+    }
+
+    /// <summary>
+    /// Uses a seed to produce predictable results.
+    /// </summary>
+    /// <param name="seed">Will be turned into a numerical seed.</param>
+    public static void Seed(this Random random, string seed)
+    {
+        seed.Truncate(stringSeedMaxLength);
+        char[] seedCharacters = seed.ToCharArray();
+        int numericSeed = 0;
+
+        for (int i = 0; i < seedCharacters.Length; i++)
         {
-            seed.Truncate(stringSeedMaxLength);
-            char[] seedCharacters = seed.ToCharArray();
-            int numericSeed = 0;
-
-            for (int i = 0; i < seedCharacters.Length; i++)
-            {
-                numericSeed += (int)char.GetNumericValue(seedCharacters[i]) * (i + 1);
-            }
-
-            Random = new Random(numericSeed);
+            numericSeed += (int)char.GetNumericValue(seedCharacters[i]) * (i + 1);
         }
 
-        /// <summary>
-        /// Uses a seed to produce predictable results.
-        /// </summary>
-        public static void Seed(int seed)
-        {
-            Random = new Random(seed);
-        }
+        Shared = new Random(numericSeed);
+    }
 
-        /// <summary>
-        /// Uses a seed to produce predictable results.
-        /// </summary>
-        public static void Seed(this Random random, int seed)
-        {
-            random = new Random(seed);
-        }
+    /// <summary>
+    /// Uses a seed to produce predictable results.
+    /// </summary>
+    public static void Seed(int seed)
+    {
+        Shared = new Random(seed);
+    }
+
+    /// <summary>
+    /// Uses a seed to produce predictable results.
+    /// </summary>
+    public static void Seed(this Random random, int seed)
+    {
+        random = new Random(seed);
     }
 }

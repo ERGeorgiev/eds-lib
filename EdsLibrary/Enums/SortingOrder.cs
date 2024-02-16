@@ -1,8 +1,7 @@
-﻿namespace EdsLibrary.Extensions
+﻿namespace EdsLibrary.Extensions;
+
+public enum SortingOrder
 {
-    public enum SortingOrder
-    {
-        Ascending,
-        Descending
-    }
+    Ascending,
+    Descending
 }
