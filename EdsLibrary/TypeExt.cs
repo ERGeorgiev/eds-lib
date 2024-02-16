@@ -1,9 +1,9 @@
-﻿namespace EdsLibrary.Extensions;
+﻿namespace EdsLibrary;
 
 public static partial class TypeExt
 {
     public static bool IsSystemType(this Type type)
     {
-        return (type.Assembly.GetName().Name == "mscorlib");
+        return type.Assembly.GetName().Name == "mscorlib";
     }
 }

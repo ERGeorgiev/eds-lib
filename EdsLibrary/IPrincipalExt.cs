@@ -1,6 +1,6 @@
 ﻿using System.Security.Principal;
 
-namespace EdsLibrary.Extensions;
+namespace EdsLibrary;
 
 public static partial class IPrincipalExt
 {

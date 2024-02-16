@@ -1,4 +1,6 @@
-﻿namespace EdsLibrary.Extensions;
+﻿using EdsLibrary.Extensions;
+
+namespace EdsLibrary;
 
 public static partial class EnumExt
 {
