@@ -1,0 +1,19 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
+
+namespace EdsLibrary.Extensions
+{
+    public static partial class EnumExt
+    {
+        public static T Random<T>() where T : struct, IConvertible
+        {
+            if (!typeof(T).IsEnum)
+            {
+                throw new ArgumentException("Enum must be an enumerated type");
+            }
+            Array enums = Enum.GetValues(typeof(T));
+            return (T)enums.GetValue(RandomExt.Random.Next(enums.Length));
+        }
+    }
+}
