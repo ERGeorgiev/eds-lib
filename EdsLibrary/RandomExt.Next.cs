@@ -14,6 +14,18 @@ public static partial class RandomExt
     /// <param name="min">Inclusive lower limit.</param>
     /// <param name="max">Exclusive upper limit.</param>
     /// <returns>Random value within the given range.</returns>
+    public static int Next(int max)
+    {
+        return Shared.Next(0, max);
+    }
+
+    /// <summary>
+    /// Generates a random integer variable.
+    /// UNSAFE FOR MULTITHREADING.
+    /// </summary>
+    /// <param name="min">Inclusive lower limit.</param>
+    /// <param name="max">Exclusive upper limit.</param>
+    /// <returns>Random value within the given range.</returns>
     public static int Next(int min, int max)
     {
         return Shared.Next(min, max);
