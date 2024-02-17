@@ -1,4 +1,4 @@
-﻿namespace EdsLibrary;
+﻿namespace EdsLibrary.Extensions;
 
 public static partial class ConsoleExt
 {

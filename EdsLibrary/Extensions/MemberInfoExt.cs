@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace EdsLibrary;
+namespace EdsLibrary.Extensions;
 
 /// <summary>
 /// Sources:

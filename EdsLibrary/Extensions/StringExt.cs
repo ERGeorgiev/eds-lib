@@ -1,4 +1,4 @@
-﻿namespace EdsLibrary;
+﻿namespace EdsLibrary.Extensions;
 /// <summary>
 /// Extension to the System.String class.
 /// </summary>
