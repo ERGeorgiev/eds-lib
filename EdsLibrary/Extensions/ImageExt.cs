@@ -10,7 +10,7 @@ public static partial class ImageExt
     /// </summary>
     public static byte[] ToByteArray(this Image image)
     {
-        ImageConverter _imageConverter = new ImageConverter();
+        ImageConverter _imageConverter = new();
         byte[] xByte = (byte[])_imageConverter.ConvertTo(image, typeof(byte[]));
         return xByte;
     }
