@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Runtime.InteropServices;
 using Console = Colorful.Console;
 
 namespace EdsLibrary.Logging;
@@ -74,7 +75,6 @@ public class ConsoleMenu
         }
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1308:Normalize strings to uppercase", Justification = "Readability.")]
     public void AddItem(ConsoleKey key, string name, Action action)
     {
         if (Keys.Contains(Input.Key))
@@ -82,11 +82,10 @@ public class ConsoleMenu
             throw new ArgumentException($"Cannot add key '{ExitKey}', as it is already in use.");
         }
 
-        Tuple<string, Action> tuple = new Tuple<string, Action>(name.ToLowerInvariant(), action);
+        Tuple<string, Action> tuple = new(name.ToLowerInvariant(), action);
         options.Add(key, tuple);
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1308:Normalize strings to uppercase", Justification = "Readability.")]
     public void AddHiddenItem(ConsoleKey key, Action action)
     {
         if (Keys.Contains(Input.Key))
@@ -106,6 +105,7 @@ public class ConsoleMenu
 
     public void Repeat()
     {
+        if (lastInput == null) return;
         Input = (ConsoleKeyInfo)lastInput;
         repeat = true;
     }

@@ -24,13 +24,14 @@ public static partial class MemberInfoExt
 
     public static T[] GetValues<T>(this MemberInfo[] members, object obj)
     {
-        List<T> properties = new List<T>();
+        List<T> properties = new();
 
         for (int i = 0; i < members.Length; i++)
         {
             if (members[i].GetTypeExt() == typeof(T))
             {
-                properties.Add((T)members[i].GetValue(obj));
+                T? val = (T?)members[i].GetValue(obj);
+                if (val != null) properties.Add(val);
             }
         }
 
@@ -45,7 +46,7 @@ public static partial class MemberInfoExt
             ((FieldInfo)member).SetValue(obj, value);
     }
 
-    public static object GetValue(this MemberInfo member, object obj)
+    public static object? GetValue(this MemberInfo member, object obj)
     {
         if (member.MemberType == MemberTypes.Property)
             return ((PropertyInfo)member).GetValue(obj, null);
@@ -57,18 +58,13 @@ public static partial class MemberInfoExt
 
     public static Type GetTypeExt(this MemberInfo member)
     {
-        switch (member.MemberType)
+        return member.MemberType switch
         {
-            case MemberTypes.Field:
-                return ((FieldInfo)member).FieldType;
-            case MemberTypes.Property:
-                return ((PropertyInfo)member).PropertyType;
-            case MemberTypes.Event:
-                return ((EventInfo)member).EventHandlerType;
-            case MemberTypes.NestedType:
-                return typeof(object[]);
-            default:
-                return typeof(object);
-        }
+            MemberTypes.Field => ((FieldInfo)member).FieldType,
+            MemberTypes.Property => ((PropertyInfo)member).PropertyType,
+            MemberTypes.Event => ((EventInfo)member).EventHandlerType,
+            MemberTypes.NestedType => typeof(object[]),
+            _ => typeof(object),
+        };
     }
 }

@@ -2,7 +2,7 @@
 
 public class ConsoleLogger : ILogger
 {
-    private string lastLog = null;
+    private string? lastLog = null;
 
 #if DEBUG
     public LogPriority LogPriority { get; set; } = LogPriority.Debug;
