@@ -1,4 +1,4 @@
-﻿namespace EdsWindowsMods.Core.Framework;
+﻿namespace EdsLibrary.Threading;
 
 public interface ITaskRunner
 {

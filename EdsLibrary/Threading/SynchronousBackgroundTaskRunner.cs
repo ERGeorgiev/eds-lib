@@ -1,4 +1,4 @@
-﻿namespace EdsWindowsMods.Core.Framework;
+﻿namespace EdsLibrary.Threading;
 
 /// <summary>
 /// Errors will go unnoticed as they fail within a headless task, make sure to use error handling withing the tasks.
