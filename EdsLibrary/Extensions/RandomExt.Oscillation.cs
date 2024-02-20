@@ -1,7 +1,7 @@
 ﻿namespace EdsLibrary.Extensions;
 
 /// <summary>
-/// Extension to the System.Random class.
+/// Extensions for the <see cref="Random"/> type.
 /// </summary>
 public static partial class RandomExt
 {

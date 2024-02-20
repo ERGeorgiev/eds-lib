@@ -1,43 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace EdsLibrary.Extensions;
 
 /// <summary>
-/// Sources:
-/// https://stackoverflow.com/questions/12680341/how-to-get-both-fields-and-properties-in-single-call-via-reflection
-/// James Newton-King, http://www.newtonsoft.com
+/// Extensions for the <see cref="MemberInfo"/> type.
 /// </summary>
 public static partial class MemberInfoExt
 {
-    public static void SetValues<T>(this MemberInfo[] members, object obj, object value)
-    {
-        for (int i = 0; i < members.Length; i++)
-        {
-            if (members[i].GetTypeExt() == typeof(T))
-            {
-                members[i].SetValue(obj, value);
-            }
-        }
-    }
-
-    public static T[] GetValues<T>(this MemberInfo[] members, object obj)
-    {
-        List<T> properties = new();
-
-        for (int i = 0; i < members.Length; i++)
-        {
-            if (members[i].GetTypeExt() == typeof(T))
-            {
-                T? val = (T?)members[i].GetValue(obj);
-                if (val != null) properties.Add(val);
-            }
-        }
-
-        return properties.ToArray();
-    }
-
     public static void SetValue(this MemberInfo member, object obj, object value)
     {
         if (member.MemberType == MemberTypes.Property)
@@ -56,15 +25,13 @@ public static partial class MemberInfoExt
             return null;
     }
 
-    public static Type GetTypeExt(this MemberInfo member)
+    public static Type? GetMemberType(this MemberInfo member)
     {
         return member.MemberType switch
         {
             MemberTypes.Field => ((FieldInfo)member).FieldType,
             MemberTypes.Property => ((PropertyInfo)member).PropertyType,
-            MemberTypes.Event => ((EventInfo)member).EventHandlerType,
-            MemberTypes.NestedType => typeof(object[]),
-            _ => typeof(object),
+            _ => null,
         };
     }
 }

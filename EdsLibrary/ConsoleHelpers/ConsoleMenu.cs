@@ -1,8 +1,7 @@
 ﻿using System.Reflection;
-using System.Runtime.InteropServices;
 using Console = Colorful.Console;
 
-namespace EdsLibrary.Logging;
+namespace EdsLibrary.ConsoleHelpers;
 
 public class ConsoleMenu
 {

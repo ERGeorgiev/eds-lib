@@ -1,5 +1,8 @@
 ﻿namespace EdsLibrary.Extensions;
 
+/// <summary>
+/// Extensions for the <see cref="Enum"/> type.
+/// </summary>
 public static partial class EnumExt
 {
     public static T Random<T>() where T : struct, IConvertible

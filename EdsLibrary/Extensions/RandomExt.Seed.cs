@@ -1,45 +1,20 @@
-﻿using System;
-
-namespace EdsLibrary.Extensions;
+﻿namespace EdsLibrary.Extensions;
 
 /// <summary>
-/// Extension to the System.Random class.
+/// Extensions for the <see cref="Random"/> type.
 /// </summary>
 public static partial class RandomExt
 {
-    private const int stringSeedMaxLength = 32;
-
     /// <summary>
     /// Uses a seed to produce predictable results.
     /// </summary>
     /// <param name="seed">Will be turned into a numerical seed.</param>
-    public static void Seed(string seed)
+    public static void Seed(string seed, int maxLength = 32)
     {
-        seed.Truncate(stringSeedMaxLength);
-        char[] seedCharacters = seed.ToCharArray();
         int numericSeed = 0;
-
-        for (int i = 0; i < seedCharacters.Length; i++)
+        for (int i = 0; i < seed.Length && i < maxLength; i++)
         {
-            numericSeed += (int)char.GetNumericValue(seedCharacters[i]) * (i + 1);
-        }
-
-        Seed(numericSeed);
-    }
-
-    /// <summary>
-    /// Uses a seed to produce predictable results.
-    /// </summary>
-    /// <param name="seed">Will be turned into a numerical seed.</param>
-    public static void Seed(this Random random, string seed)
-    {
-        seed.Truncate(stringSeedMaxLength);
-        char[] seedCharacters = seed.ToCharArray();
-        int numericSeed = 0;
-
-        for (int i = 0; i < seedCharacters.Length; i++)
-        {
-            numericSeed += (int)char.GetNumericValue(seedCharacters[i]) * (i + 1);
+            numericSeed += seed[i] * (i + 1);
         }
 
         Shared = new Random(numericSeed);
@@ -51,13 +26,5 @@ public static partial class RandomExt
     public static void Seed(int seed)
     {
         Shared = new Random(seed);
-    }
-
-    /// <summary>
-    /// Uses a seed to produce predictable results.
-    /// </summary>
-    public static void Seed(this Random random, int seed)
-    {
-        random = new Random(seed);
     }
 }

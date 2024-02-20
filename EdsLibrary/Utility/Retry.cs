@@ -1,4 +1,4 @@
-﻿using EdsLibrary.Logging;
+﻿using EdsLibrary.ConsoleHelpers;
 
 namespace EdsLibrary;
 

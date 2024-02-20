@@ -1,6 +1,7 @@
-﻿public enum Plane
+﻿namespace EdsLibrary.Enums;
+
+public enum Plane
 {
     Horizontal,
-    Vertical,
-    Both
+    Vertical
 }

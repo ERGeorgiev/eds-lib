@@ -1,4 +1,4 @@
-﻿namespace EdsLibrary.Extensions;
+﻿namespace EdsLibrary.Enums;
 
 public enum Rotation
 {

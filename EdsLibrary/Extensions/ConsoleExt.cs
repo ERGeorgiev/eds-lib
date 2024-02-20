@@ -1,10 +1,15 @@
-﻿namespace EdsLibrary.Extensions;
+﻿using System.Text.Json;
 
+namespace EdsLibrary.Extensions;
+
+/// <summary>
+/// Extensions for the <see cref="Console"/> type.
+/// </summary>
 public static partial class ConsoleExt
 {
     public static void ClearRows(int start, int end)
     {
-        string emptyLine = new string(' ', Console.BufferWidth);
+        string emptyLine = new(' ', Console.BufferWidth);
         for (int i = start; i <= end; i++)
         {
             Console.SetCursorPosition(0, i);
@@ -12,27 +17,21 @@ public static partial class ConsoleExt
         }
     }
 
-    public static double ScanDouble(string name)
+    public static T RequestInputValue<T>(string name)
     {
-        double input;
+        T? value = default;
         do
         {
             Console.Write($"Please enter a value for '{name}': ");
+            var input = Console.ReadLine();
+            try
+            {
+                value = JsonSerializer.Deserialize<T>(input) ?? throw new JsonException("Value cannot be null");
+            }
+            catch (JsonException) { }
         }
-        while (!double.TryParse(Console.ReadLine(), out input));
+        while (value == null);
 
-        return input;
-    }
-
-    public static int ScanInt(string name)
-    {
-        int input;
-        do
-        {
-            Console.Write($"Please enter a value for '{name}': ");
-        }
-        while (!int.TryParse(Console.ReadLine(), out input));
-
-        return input;
+        return value;
     }
 }

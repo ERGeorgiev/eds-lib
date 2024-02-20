@@ -1,18 +1,11 @@
-﻿/// <summary>
-/// Represents the axis of a 2D coordinate system.
+﻿namespace EdsLibrary.Enums;
+
+/// <summary>
+/// Represents the axis of a 3D coordinate system.
 /// </summary>
 public enum Axis3D
 {
-    /// <summary>
-    /// Represents the X axis.
-    /// </summary>
     X,
-    /// <summary>
-    /// Represents the Y axis.
-    /// </summary>
     Y,
-    /// <summary>
-    /// Represents the Z axis.
-    /// </summary>
     Z
 }

@@ -1,5 +1,8 @@
 ﻿namespace EdsLibrary.Extensions;
 
+/// <summary>
+/// Extension to generic objects.
+/// </summary>
 public static partial class GenericExt
 {
     /// <summary>

@@ -1,4 +1,4 @@
-﻿namespace EdsLibrary.Logging;
+﻿namespace EdsLibrary.Logging.Table;
 
 public class TableFormatter
 {
@@ -27,7 +27,7 @@ public class TableFormatter
     /// <param name="length">Max text length.</param>
     public void Add(string name, string value, int length)
     {
-        LogItem item = new LogItem(name, value, length);
+        LogItem item = new(name, value, length);
         LogItems.Add(item);
     }
 
@@ -40,7 +40,7 @@ public class TableFormatter
     /// <param name="length">Max text length.</param>
     public void Add(string name, float value, string format, int length)
     {
-        LogItem item = new LogItem(name, value, format, length);
+        LogItem item = new(name, value, format, length);
         LogItems.Add(item);
     }
 
@@ -52,8 +52,8 @@ public class TableFormatter
     /// <param name="length">Max text length.</param>
     public void Add(string name, KeyValuePair<string, string> values, int length)
     {
-        LogItem itemA = new LogItem(name, values.Key, length);
-        LogItem itemB = new LogItem(name, values.Value, length);
+        LogItem itemA = new(name, values.Key, length);
+        LogItem itemB = new(name, values.Value, length);
         LogItems.Add(itemA);
         LogItems.Add(itemB);
     }
@@ -67,8 +67,8 @@ public class TableFormatter
     /// <param name="length">Max text length.</param>
     public void Add(string name, KeyValuePair<float, float> values, string format, int length)
     {
-        LogItem itemA = new LogItem(name, values.Key, format, length);
-        LogItem itemB = new LogItem(name, values.Value, format, length);
+        LogItem itemA = new(name, values.Key, format, length);
+        LogItem itemB = new(name, values.Value, format, length);
         LogItems.Add(itemA);
         LogItems.Add(itemB);
     }
@@ -81,8 +81,8 @@ public class TableFormatter
     /// <param name="length">Max text length.</param>
     public void Add(string name, string valueA, string valueB, int length)
     {
-        LogItem itemA = new LogItem(name, valueA, length);
-        LogItem itemB = new LogItem(name, valueB, length);
+        LogItem itemA = new(name, valueA, length);
+        LogItem itemB = new(name, valueB, length);
         LogItems.Add(itemA);
         LogItems.Add(itemB);
     }
@@ -96,8 +96,8 @@ public class TableFormatter
     /// <param name="length">Max text length.</param>
     public void Add(string name, float valueA, float valueB, string format, int length)
     {
-        LogItem itemA = new LogItem(name, valueA, format, length);
-        LogItem itemB = new LogItem(name, valueB, format, length);
+        LogItem itemA = new(name, valueA, format, length);
+        LogItem itemB = new(name, valueB, format, length);
         LogItems.Add(itemA);
         LogItems.Add(itemB);
     }
@@ -129,6 +129,24 @@ public class TableFormatter
         foreach (var nameGroup in LogItems.GroupBy(x => x.name))
         {
             output += GetFormattedValues(nameGroup);
+        }
+
+        return output;
+    }
+
+    public override string ToString()
+    {
+        string output = string.Empty;
+        List<IEnumerable<string>> lines = new()
+        {
+            GetHeaders(),
+            GetValues()
+        };
+
+        foreach (var line in lines)
+        {
+            var values = string.Join(",", line);
+            output += values;
         }
 
         return output;
@@ -170,7 +188,7 @@ public class TableFormatter
             this.name = name;
             this.length = length;
             Validate();
-            this.valueString = ToValueString(value, format);
+            valueString = ToValueString(value, format);
         }
 
         public LogItem(string name, string value, int length)
@@ -178,7 +196,7 @@ public class TableFormatter
             this.name = name;
             this.length = length;
             Validate();
-            this.valueString = value;
+            valueString = value;
         }
 
         private void Validate()

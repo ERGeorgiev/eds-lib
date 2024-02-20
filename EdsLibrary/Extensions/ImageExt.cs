@@ -1,7 +1,7 @@
 ﻿namespace EdsLibrary.Extensions;
 
 /// <summary>
-/// Extension to the Image class.
+/// Extensions for the <see cref="Image"/> type.
 /// </summary>
 public static partial class ImageExt
 {
@@ -13,21 +13,5 @@ public static partial class ImageExt
         ImageConverter _imageConverter = new();
         byte[] xByte = (byte[])_imageConverter.ConvertTo(image, typeof(byte[]));
         return xByte;
-    }
-
-    /// <summary>
-    /// Transforms an image into a float array.
-    /// </summary>
-    public static float[] ToFloatArray(this Image image)
-    {
-        byte[] byteArray = image.ToByteArray();
-        float[] floatArray = new float[byteArray.Length];
-
-        for (int i = 0; i < byteArray.Length; i++)
-        {
-            floatArray[i] = byteArray[i] / 255f;
-        }
-
-        return floatArray;
     }
 }

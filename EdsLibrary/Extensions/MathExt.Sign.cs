@@ -1,7 +1,7 @@
 ﻿namespace EdsLibrary.Extensions;
 
 /// <summary>
-/// Extension to the System.Math class.
+/// Extensions for the <see cref="Math"/> type.
 /// </summary>
 public static partial class MathExt
 {

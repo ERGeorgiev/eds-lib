@@ -1,9 +1,7 @@
-﻿using System;
-
-namespace EdsLibrary.Extensions;
+﻿namespace EdsLibrary.Extensions;
 
 /// <summary>
-/// Extension to the System.Random class.
+/// Extensions for the <see cref="Random"/> type.
 /// </summary>
 public static partial class RandomExt
 {
@@ -11,12 +9,11 @@ public static partial class RandomExt
     /// Generates a random integer variable.
     /// UNSAFE FOR MULTITHREADING.
     /// </summary>
-    /// <param name="min">Inclusive lower limit.</param>
     /// <param name="max">Exclusive upper limit.</param>
     /// <returns>Random value within the given range.</returns>
     public static int Next(int max)
     {
-        return Shared.Next(0, max);
+        return Shared.Next(max);
     }
 
     /// <summary>
