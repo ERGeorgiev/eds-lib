@@ -9,12 +9,7 @@ namespace EdsLibrary.Logging;
 /// </summary>
 public class Logger
 {
-    public static readonly JsonSerializerOptions SerializerOptions = new(JsonSerializerDefaults.Web) { WriteIndented = true };
-
-    private Logger()
-    {
-        SerializerOptions.Converters.Add(new ExceptionConverter());
-    }
+    public static readonly JsonSerializerOptions SerializerOptions = GetSerializerOptions();
 
     public static bool WriteToConsole { get; set; } = true;
     public static List<Action<string>> Outputs { get; } = new();
@@ -128,5 +123,13 @@ public class Logger
             LogLevel.Critical => ConsoleColor.DarkRed,
             _ => ConsoleColor.White,
         };
+    }
+
+    private static JsonSerializerOptions GetSerializerOptions()
+    {
+        var serializer = new JsonSerializerOptions(JsonSerializerDefaults.Web) { WriteIndented = true };
+        serializer.Converters.Add(new ExceptionConverter());
+
+        return serializer;
     }
 }
