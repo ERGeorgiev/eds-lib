@@ -39,6 +39,30 @@ public static class BitmapEditor
         return newImg;
     }
 
+    public static Bitmap Overlay(Bitmap layer1, Bitmap layer2)
+    {
+        var newImg = new Bitmap(layer1.Width, layer1.Height);
+
+        for (int x = 0; x < layer1.Width; x++)
+        {
+            for (int y = 0; y < layer1.Height; y++)
+            {
+                var color = layer1.GetPixel(x, y);
+                if (x < layer2.Width && y < layer2.Height)
+                {
+                    var overlayColor = layer2.GetPixel(x, y);
+                    if (overlayColor != Color.Transparent)
+                    {
+                        color = color.Merge(layer2.GetPixel(x, y));
+                    }
+                }
+                newImg.SetPixel(x, y, color);
+            }
+        }
+
+        return newImg;
+    }
+
     public static Bitmap Rotate(Bitmap img, double angleInDegrees)
     {
         Color?[,] newImgArray = new Color?[img.Width, img.Height];
@@ -176,7 +200,6 @@ public static class BitmapEditor
             default:
                 break;
         }
-
         return newImg;
     }
 }

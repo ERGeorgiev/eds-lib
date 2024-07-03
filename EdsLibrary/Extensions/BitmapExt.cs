@@ -16,6 +16,7 @@ public static partial class BitmapExt
     public static Bitmap MoveInLoop(this Bitmap img, int moveX, int moveY) => BitmapEditor.Transpose(img, moveX, moveY);
     public static Bitmap Rotate(this Bitmap img, double angle) => BitmapEditor.Rotate(img, angle);
     public static Bitmap Flip(this Bitmap img, Plane? plane = null) => BitmapEditor.Flip(img, plane);
+    public static Bitmap Overlay(this Bitmap img, Bitmap overlay) => BitmapEditor.Overlay(img, overlay);
 
     /// <summary>
     /// Generates a simple bitmap.
