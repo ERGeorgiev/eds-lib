@@ -38,4 +38,12 @@ public static partial class RandomExt
     {
         return elements[Next(elements.Count)];
     }
+
+    /// <summary>
+    /// Returns a random element.
+    /// </summary>
+    public static T RandomElement<T>(this IEnumerable<T> elements)
+    {
+        return elements.ElementAt(Next(elements.Count()));
+    }
 }
