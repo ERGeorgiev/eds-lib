@@ -15,6 +15,14 @@ public static partial class ColorExt
         return Color.FromArgb(alpha, red, green, blue);
     }
 
+    /// <summary>
+    /// </summary>
+    /// <param name="alpha">0 to 255.</param>
+    public static Color SetOpacity(this Color a, float opacity)
+    {
+        return Color.FromArgb((byte)(a.A * opacity), a.R, a.G, a.B);
+    }
+
     public static IEnumerable<Color> AllColors() => new Color[]
     {
         Color.AliceBlue,

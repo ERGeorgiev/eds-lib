@@ -5,7 +5,7 @@
 /// </summary>
 public static partial class ImageExt
 {
-    public static Lazy<Image> Blank = new(() => BitmapExt.Blank.Value.ToImage());
+    public static Lazy<Image> Blank = new(() => BitmapExt.Blank.Value);
 
     /// <summary>
     /// Low quality conversion. Finding a high quality conversion proved difficult.

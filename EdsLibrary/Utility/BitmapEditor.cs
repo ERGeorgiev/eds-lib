@@ -5,6 +5,65 @@ namespace EdsLibrary.Utility;
 
 public static class BitmapEditor
 {
+    public static Bitmap Combine(Plane plane, params Bitmap[] b)
+    {
+        var width = b[0].Width;
+        var height = b[0].Height;
+        if (plane == Plane.Horizontal)
+        {
+            foreach (var bitmap in b)
+            {
+                if (bitmap.Size.Height != height)
+                {
+                    throw new ArgumentOutOfRangeException($"Bitmaps must be the same height to combine on Plane '{plane}'.");
+                }
+            }
+        }
+        if (plane == Plane.Vertical)
+        {
+            foreach (var bitmap in b)
+            {
+                if (bitmap.Size.Width != width)
+                {
+                    throw new ArgumentOutOfRangeException($"Bitmaps must be the same width to combine on Plane '{plane}'.");
+                }
+            }
+        }
+
+        Bitmap newImg;
+        if (plane == Plane.Horizontal)
+        {
+            newImg = new Bitmap(b.Sum(b => b.Width), height);
+        }
+        else
+        {
+            newImg = new Bitmap(width, b.Sum(b => b.Height));
+        }
+
+        var startX = 0;
+        var startY = 0;
+        foreach (var bitmap in b)
+        {
+            Add(newImg, bitmap, startX, startY);
+            if (plane == Plane.Horizontal) startX += bitmap.Size.Width;
+            if (plane == Plane.Vertical) startY += bitmap.Size.Height;
+        }
+
+        // 0,0 is top left
+        void Add(Bitmap canvas, Bitmap toAdd, int startX, int startY)
+        {
+            for (int x = 0; x < toAdd.Width; x++)
+            {
+                for (int y = 0; y < toAdd.Height; y++)
+                {
+                    canvas.SetPixel(x + startX, y + startY, toAdd.GetPixel(x, y));
+                }
+            }
+        }
+
+        return newImg;
+    }
+
     public static Bitmap Move(Bitmap img, int offsetX, int offsetY)
     {
         var newImg = new Bitmap(img.Width, img.Height);
@@ -17,6 +76,23 @@ public static class BitmapEditor
             for (int y = Math.Max(offsetY, 0); y < yLimit; y++)
             {
                 newImg.SetPixel(x, y, img.GetPixel(x - offsetX, y - offsetY));
+            }
+        }
+
+        return newImg;
+    }
+
+    public static Bitmap SetOpacity(Bitmap img, float opacity)
+    {
+        var newImg = new Bitmap(img.Width, img.Height);
+
+        for (int x = 0; x < img.Width; x++)
+        {
+            for (int y = 0; y < img.Height; y++)
+            {
+                var pixel = img.GetPixel(x, y);
+                pixel = pixel.SetOpacity(opacity);
+                newImg.SetPixel(x, y, pixel);
             }
         }
 
@@ -200,6 +276,27 @@ public static class BitmapEditor
             default:
                 break;
         }
+        return newImg;
+    }
+
+    /// <summary>
+    /// Generates a simple bitmap.
+    /// </summary>
+    public static Bitmap Generate(Size size, Color? color = null)
+    {
+        var newImg = new Bitmap(size.Width, size.Height);
+
+        if (color != null)
+        {
+            for (int x = 0; x < size.Width; x++)
+            {
+                for (int y = 0; y < size.Height; y++)
+                {
+                    newImg.SetPixel(x, y, color.Value);
+                }
+            }
+        }
+
         return newImg;
     }
 }
