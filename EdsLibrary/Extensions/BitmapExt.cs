@@ -16,4 +16,22 @@ public static partial class BitmapExt
     public static Bitmap Rotate(this Bitmap img, double angle) => BitmapEditor.Rotate(img, angle);
     public static Bitmap Flip(this Bitmap img, Plane? plane = null) => BitmapEditor.Flip(img, plane);
     public static Bitmap Overlay(this Bitmap img, Bitmap overlay) => BitmapEditor.Overlay(img, overlay);
+
+    /// <summary>
+    /// Load an image from a file. Returns a blank fallback image on failure.
+    /// </summary>
+    public static Bitmap FromStreamSafe(Stream? stream)
+    {
+        if (stream == null) return Blank.Value;
+
+        try
+        {
+            return new Bitmap(stream);
+        }
+        catch (Exception e)
+        {
+            Logger.LogError($"Failed to load image from stream.", e);
+            return Blank.Value;
+        }
+    }
 }

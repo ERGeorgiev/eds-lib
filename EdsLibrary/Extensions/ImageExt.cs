@@ -43,7 +43,7 @@ public static partial class ImageExt
     /// <summary>
     /// Load an image from a file. Returns a blank fallback image on failure.
     /// </summary>
-    public static Image FromStreamSafe(this Stream? stream)
+    public static Image FromStreamSafe(Stream? stream)
     {
         if (stream == null) return Blank.Value;
 
