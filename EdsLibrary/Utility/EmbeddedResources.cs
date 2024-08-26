@@ -22,7 +22,8 @@ public static class EmbeddedResources
 
     private static IEnumerable<string> GetManifestResourceNamesThatContainFile(Assembly assembly, string filename, StringComparison comparisonType = StringComparison.OrdinalIgnoreCase)
     {
-        var names = assembly.GetManifestResourceNames().Where(v => v.EndsWith("." + filename, comparisonType));
-        return names;
+        var names = assembly.GetManifestResourceNames().ToArray();
+        var validNames = names.Where(v => v.EndsWith("." + filename, comparisonType)).ToArray();
+        return validNames;
     }
 }
