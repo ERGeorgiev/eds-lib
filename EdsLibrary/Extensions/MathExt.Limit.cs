@@ -1,4 +1,6 @@
-﻿namespace EdsLibrary.Extensions;
+﻿using System.Numerics;
+
+namespace EdsLibrary.Extensions;
 
 /// <summary>
 /// Extensions for the <see cref="Math"/> type.
@@ -91,5 +93,15 @@ public static partial class MathExt
     public static decimal Limit(this decimal value, decimal minimum, decimal maximum)
     {
         return Math.Min(Math.Max(value, minimum), maximum);
+    }
+
+    /// <summary>
+    /// Constricts the value within [minimum, maximum].
+    /// </summary>
+    public static BigInteger Limit(this BigInteger value, BigInteger minimum, BigInteger maximum)
+    {
+        if (value <= minimum) return minimum;
+        if (value >= maximum) return maximum;
+        return value;
     }
 }
