@@ -115,28 +115,81 @@ public static class BitmapEditor
         return newImg;
     }
 
-    public static Bitmap Overlay(Bitmap layer1, Bitmap layer2)
+    public static Bitmap[] ExtractSpreadsheet(Bitmap spreadsheet, Size singleImageSize)
     {
-        var newImg = new Bitmap(layer1.Width, layer1.Height);
+        if (singleImageSize.Width == 0 || singleImageSize.Height == 0)
+            throw new ArgumentException($"Both the width and the height of the selected size must be bigger than 0.");
+        if (spreadsheet.Width % singleImageSize.Width != 0)
+            throw new ArgumentOutOfRangeException($"The spreadsheet width ({spreadsheet.Width}) must be multiple of the size width ({singleImageSize.Width})");
+        if (spreadsheet.Height % singleImageSize.Height != 0)
+            throw new ArgumentOutOfRangeException($"The spreadsheet width ({spreadsheet.Height}) must be multiple of the size width ({singleImageSize.Height})");
 
-        for (int x = 0; x < layer1.Width; x++)
+        int cols = spreadsheet.Width / singleImageSize.Width;
+        int rows = spreadsheet.Height / singleImageSize.Height;
+        var canvases = new List<Bitmap>();
+
+        for (int c = 0; c < cols; c++)
         {
-            for (int y = 0; y < layer1.Height; y++)
+            for (int r = 0; r < rows; r++)
             {
-                var color = layer1.GetPixel(x, y);
-                if (x < layer2.Width && y < layer2.Height)
+                var canvas = new Bitmap(singleImageSize.Width, singleImageSize.Height);
+                var canvasIsFullyTransparent = true;
+                for (int x = 0; x < canvas.Width; x++)
                 {
-                    var overlayColor = layer2.GetPixel(x, y);
-                    if (overlayColor != Color.Transparent)
+                    var spreadsheetX = x + (c * singleImageSize.Width);
+                    for (int y = 0; y < canvas.Height; y++)
                     {
-                        color = color.Merge(layer2.GetPixel(x, y));
+                        var spreadsheetY = y + (r * singleImageSize.Height);
+                        var spreadsheetPixel = spreadsheet.GetPixel(spreadsheetX, spreadsheetY);
+                        if (spreadsheetPixel != Color.Transparent)
+                        {
+                            canvas.SetPixel(x, y, spreadsheet.GetPixel(spreadsheetX, spreadsheetY));
+                            canvasIsFullyTransparent = false;
+                        }
                     }
                 }
-                newImg.SetPixel(x, y, color);
+                if (canvasIsFullyTransparent == false) canvases.Add(canvas);
             }
         }
 
-        return newImg;
+        return canvases.ToArray();
+    }
+
+    public static Bitmap Overlay(Bitmap layer, Bitmap overlay, OverlayAnchor startingPosition = OverlayAnchor.TopLeft)
+    {
+        var canvas = new Bitmap(layer.Width, layer.Height);
+
+        for (int x = 0; x < layer.Width; x++)
+        {
+            for (int y = 0; y < layer.Height; y++)
+            {
+                var color = layer.GetPixel(x, y);
+                if (x < overlay.Width && y < overlay.Height)
+                {
+                    var overlayColor = GetCorrespondingOverlayPixel(x, y);
+                    if (overlayColor != null && overlayColor != Color.Transparent)
+                    {
+                        color = color.Merge(overlayColor.Value);
+                    }
+                }
+                canvas.SetPixel(x, y, color);
+            }
+        }
+
+        return canvas;
+
+        Color? GetCorrespondingOverlayPixel(int x, int y)
+        {
+            if (startingPosition == OverlayAnchor.TopRight || startingPosition == OverlayAnchor.BottomRight) x -= (canvas.Width - overlay.Width);
+            if (startingPosition == OverlayAnchor.BottomLeft || startingPosition == OverlayAnchor.BottomRight) y -= (canvas.Height - overlay.Height);
+
+            if (x > 0 && y > 0 && x < overlay.Width && y < overlay.Height)
+            {
+                return overlay.GetPixel(x, y);
+            }
+
+            return null;
+        }
     }
 
     public static Bitmap Rotate(Bitmap img, double angleInDegrees)
@@ -298,5 +351,13 @@ public static class BitmapEditor
         }
 
         return newImg;
+    }
+
+    public enum OverlayAnchor
+    {
+        TopLeft,
+        TopRight,
+        BottomLeft,
+        BottomRight,
     }
 }
