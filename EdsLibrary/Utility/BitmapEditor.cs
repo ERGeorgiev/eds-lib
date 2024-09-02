@@ -165,13 +165,10 @@ public static class BitmapEditor
             for (int y = 0; y < layer.Height; y++)
             {
                 var color = layer.GetPixel(x, y);
-                if (x < overlay.Width && y < overlay.Height)
+                var overlayColor = GetCorrespondingOverlayPixel(x, y);
+                if (overlayColor != null && overlayColor != Color.Transparent)
                 {
-                    var overlayColor = GetCorrespondingOverlayPixel(x, y);
-                    if (overlayColor != null && overlayColor != Color.Transparent)
-                    {
-                        color = color.Merge(overlayColor.Value);
-                    }
+                    color = color.Merge(overlayColor.Value);
                 }
                 canvas.SetPixel(x, y, color);
             }
