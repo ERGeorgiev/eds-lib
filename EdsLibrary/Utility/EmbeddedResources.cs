@@ -5,7 +5,7 @@ namespace EdsLibrary.Utility;
 public static class EmbeddedResources
 {
     public static Stream GetOrThrow(string filename, StringComparison comparisonType = StringComparison.OrdinalIgnoreCase)
-        => Get(filename) ?? throw new NullReferenceException($"Stream for file '{filename}' is null. Does the file exist?");
+        => Get(filename, comparisonType) ?? throw new NullReferenceException($"Stream for file '{filename}' is null. Does the file exist?");
 
     public static Stream? Get(string filename, StringComparison comparisonType = StringComparison.OrdinalIgnoreCase)
     {
