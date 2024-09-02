@@ -354,6 +354,8 @@ public static class BitmapEditor
         return newImg;
     }
 
+    // ToDo: None of these methods are thread safe, as trying to GetPixel on Bitmap that is in use elsewhere throws and error.
+    // Unsure what in use elsewhere might mean.
     public static Bitmap Grayscale(Bitmap img)
     {
         var newImg = new Bitmap(img.Width, img.Height);
