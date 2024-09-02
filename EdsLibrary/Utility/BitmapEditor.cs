@@ -1,5 +1,6 @@
 ﻿using EdsLibrary.Enums;
 using EdsLibrary.Extensions;
+using System.Drawing;
 
 namespace EdsLibrary.Utility;
 
@@ -350,6 +351,28 @@ public static class BitmapEditor
             }
         }
 
+        return newImg;
+    }
+
+    public static Bitmap Grayscale(Bitmap img)
+    {
+        var newImg = new Bitmap(img.Width, img.Height);
+        for (int x = 0; x < img.Width; x++)
+        {
+            for (int y = 0; y < img.Height; y++)
+            {
+                var pixel = img.GetPixel(x, y);
+                if (pixel.A == 0)
+                {
+                    newImg.SetPixel(x, y, Color.Transparent);
+                }
+                else
+                {
+                    var gray = (int)(pixel.R * 0.3 + pixel.G * 0.59 + pixel.B * 0.11);
+                    newImg.SetPixel(x, y, Color.FromArgb(gray, gray, gray));
+                }
+            }
+        }
         return newImg;
     }
 
