@@ -1,9 +1,9 @@
 ﻿using EdsLibrary.Enums;
 using EdsLibrary.Extensions;
-using System.Drawing;
 
 namespace EdsLibrary.Utility;
 
+// 0,0 is top left
 public static class BitmapEditor
 {
     public static Bitmap Combine(Plane plane, params Bitmap[] b)
@@ -58,6 +58,44 @@ public static class BitmapEditor
                 for (int y = 0; y < toAdd.Height; y++)
                 {
                     canvas.SetPixel(x + startX, y + startY, toAdd.GetPixel(x, y));
+                }
+            }
+        }
+
+        return newImg;
+    }
+
+    public static Bitmap CanvasIncrement(Bitmap img, int top = 0, int bottom = 0, int left = 0, int right = 0)
+    {
+        // Init
+        var totalWidthIncrement = left + right;
+        var totalHeightIncrement = top + bottom;
+        if (totalWidthIncrement <= -img.Width) throw new ArgumentOutOfRangeException("Total width increment cannot set the image to less than 1 pixel width.");
+        if (totalHeightIncrement <= -img.Height) throw new ArgumentOutOfRangeException("Total height increment cannot set the image to less than 1 pixel height.");
+        var newImg = new Bitmap(img.Width + totalWidthIncrement, img.Height + totalHeightIncrement);
+        if (left <= -img.Width || right <= -img.Width) return newImg;
+        if (top <= -img.Height || bottom <= -img.Height) return newImg;
+
+        // X
+        var oldImgXStart = left < 0 ? Math.Abs(left) : 0;
+        var oldImgXEnd = img.Width + (right < 0 ? right : 0);
+        var newImgXStart = left > 0 ? left : 0;
+
+        // Y
+        var oldImgYStart = top < 0 ? Math.Abs(top) : 0;
+        var oldImgYEnd = img.Height + (bottom < 0 ? bottom : 0);
+        var newImgYStart = top > 0 ? top : 0;
+
+        for (int x = oldImgXStart; x < oldImgXEnd; x++)
+        {
+            for (int y = oldImgYStart; y < oldImgYEnd; y++)
+            {
+                var pixelToWrite = img.GetPixel(x, y);
+                if (pixelToWrite.A != 0)
+                {
+                    var newX = x + newImgXStart - oldImgXStart;
+                    var newY = y + newImgYStart - oldImgYStart;
+                    newImg.SetPixel(newX, newY, pixelToWrite);
                 }
             }
         }
@@ -156,7 +194,7 @@ public static class BitmapEditor
         return canvases.ToArray();
     }
 
-    public static Bitmap Overlay(Bitmap layer, Bitmap overlay, OverlayAnchor startingPosition = OverlayAnchor.TopLeft)
+    public static Bitmap Overlay(Bitmap layer, Bitmap overlay, CornerAnchor startingPosition = CornerAnchor.TopLeft)
     {
         var canvas = new Bitmap(layer.Width, layer.Height);
 
@@ -178,8 +216,8 @@ public static class BitmapEditor
 
         Color? GetCorrespondingOverlayPixel(int x, int y)
         {
-            if (startingPosition == OverlayAnchor.TopRight || startingPosition == OverlayAnchor.BottomRight) x -= (canvas.Width - overlay.Width);
-            if (startingPosition == OverlayAnchor.BottomLeft || startingPosition == OverlayAnchor.BottomRight) y -= (canvas.Height - overlay.Height);
+            if (startingPosition == CornerAnchor.TopRight || startingPosition == CornerAnchor.BottomRight) x -= (canvas.Width - overlay.Width);
+            if (startingPosition == CornerAnchor.BottomLeft || startingPosition == CornerAnchor.BottomRight) y -= (canvas.Height - overlay.Height);
 
             if (x > 0 && y > 0 && x < overlay.Width && y < overlay.Height)
             {
@@ -375,7 +413,7 @@ public static class BitmapEditor
         return newImg;
     }
 
-    public enum OverlayAnchor
+    public enum CornerAnchor
     {
         TopLeft,
         TopRight,
