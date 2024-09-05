@@ -23,16 +23,24 @@ public static partial class TaskExt
     public static async Task NewPeriodicAction(Action action, TimeSpan frequency, CancellationToken cancellationToken)
     {
         var nextUpdate = DateTime.Now;
-        while (cancellationToken.IsCancellationRequested == false)
+        try
         {
-            nextUpdate = DateTime.Now + frequency; // Better than nextUpdate + freq, because nextUpdate + freq can accumulate lost time.
-            action.Invoke();
-            var timeUntilNextUpdate = nextUpdate - DateTime.Now;
-            if (timeUntilNextUpdate.TotalMilliseconds < frequency.TotalMilliseconds / 2)
-                Logger.LogWarning($"Slow periodic action '{action.Method.Name}'" +
-                    $" ({timeUntilNextUpdate.TotalMilliseconds}ms remaining / {frequency.TotalMilliseconds}ms total)");
-            if (timeUntilNextUpdate.TotalMilliseconds > 0)
-                await Task.Delay(timeUntilNextUpdate);
+            while (cancellationToken.IsCancellationRequested == false)
+            {
+                nextUpdate = DateTime.Now + frequency; // Better than nextUpdate + freq, because nextUpdate + freq can accumulate lost time.
+                action.Invoke();
+                var timeUntilNextUpdate = nextUpdate - DateTime.Now;
+                if (timeUntilNextUpdate.TotalMilliseconds < frequency.TotalMilliseconds / 2)
+                    Logger.LogWarning($"Slow periodic action '{action.Method.Name}'" +
+                        $" ({timeUntilNextUpdate.TotalMilliseconds}ms remaining / {frequency.TotalMilliseconds}ms total)");
+                if (timeUntilNextUpdate.TotalMilliseconds > 0)
+                    await Task.Delay(timeUntilNextUpdate);
+            }
+        }
+        catch (Exception e)
+        {
+            Logger.LogError("Periodic task failed.", e);
+            throw;
         }
     }
 }
