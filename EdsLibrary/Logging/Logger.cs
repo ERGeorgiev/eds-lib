@@ -26,6 +26,9 @@ public class Logger
     public static void LogTrace(string message, Exception? exception = null)
         => Log(LogLevel.Trace, message, exception);
 
+    public static void LogTrace(object objectToLog, Exception? exception = null)
+        => Log(LogLevel.Trace, objectToLog, exception);
+
     public static void LogTrace(Exception exception)
         => Log(LogLevel.Trace, exception);
 
@@ -34,6 +37,9 @@ public class Logger
 
     public static void LogDebug(string message, Exception? exception = null)
         => Log(LogLevel.Debug, message, exception);
+
+    public static void LogDebug(object objectToLog, Exception? exception = null)
+        => Log(LogLevel.Debug, objectToLog, exception);
 
     public static void LogDebug(Exception exception)
         => Log(LogLevel.Debug, exception);
@@ -44,6 +50,9 @@ public class Logger
     public static void LogInformation(string message, Exception? exception = null)
         => Log(LogLevel.Information, message, exception);
 
+    public static void LogInformation(object objectToLog, Exception? exception = null)
+        => Log(LogLevel.Information, objectToLog, exception);
+
     public static void LogInformation(Exception exception)
         => Log(LogLevel.Information, exception);
 
@@ -52,6 +61,9 @@ public class Logger
 
     public static void LogWarning(string message, Exception? exception = null)
         => Log(LogLevel.Warning, message, exception);
+
+    public static void LogWarning(object objectToLog, Exception? exception = null)
+        => Log(LogLevel.Warning, objectToLog, exception);
 
     public static void LogWarning(Exception exception)
         => Log(LogLevel.Warning, exception);
@@ -62,6 +74,9 @@ public class Logger
     public static void LogError(string message, Exception? exception = null)
         => Log(LogLevel.Error, message, exception);
 
+    public static void LogError(object objectToLog, Exception? exception = null)
+        => Log(LogLevel.Error, objectToLog, exception);
+
     public static void LogError(Exception exception)
         => Log(LogLevel.Error, exception);
 
@@ -71,6 +86,9 @@ public class Logger
     public static void LogCritical(string message, Exception? exception = null)
         => Log(LogLevel.Critical, message, exception);
 
+    public static void LogCritical(object objectToLog, Exception? exception = null)
+        => Log(LogLevel.Critical, objectToLog, exception);
+
     public static void LogCritical(Exception exception)
         => Log(LogLevel.Critical, exception);
 
@@ -79,6 +97,9 @@ public class Logger
         if (Level > logLevel) return; // To avoid invoking getMessage
         LogInternal(logLevel, getMessage?.Invoke(), exception);
     }
+
+    public static void Log(LogLevel logLevel, object objectToLog, Exception? exception = null)
+        => LogInternal(logLevel, objectToLog?.ToString(), exception);
 
     public static void Log(LogLevel logLevel, string? message = null, Exception? exception = null)
         => LogInternal(logLevel, message, exception);
