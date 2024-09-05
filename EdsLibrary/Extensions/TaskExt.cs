@@ -8,11 +8,11 @@ public static partial class TaskExt
     /// <summary>
     /// </summary>
     /// <returns>A cancellation token source for the created task. It will be disposed by the task after it is cancelled.</returns>
-    public static CancellationTokenSource NewPeriodicAction(TimeSpan frequency, Action action)
+    public static CancellationTokenSource NewPeriodicAction(Action action, TimeSpan frequency)
     {
         var cancellationTokenSource = new CancellationTokenSource();
         Task.Run(
-            () => NewPeriodicAction(frequency, action, cancellationTokenSource.Token)
+            () => NewPeriodicAction(action, frequency, cancellationTokenSource.Token)
             .ContinueWith((_) => cancellationTokenSource.Dispose())
         );
         Logger.LogDebug($"Started periodic action '{action.Method.Name}'");
@@ -20,7 +20,7 @@ public static partial class TaskExt
         return cancellationTokenSource;
     }
 
-    public static async Task NewPeriodicAction(TimeSpan frequency, Action action, CancellationToken cancellationToken)
+    public static async Task NewPeriodicAction(Action action, TimeSpan frequency, CancellationToken cancellationToken)
     {
         var nextUpdate = DateTime.Now;
         while (cancellationToken.IsCancellationRequested == false)
