@@ -204,7 +204,7 @@ public static class BitmapEditor
             {
                 var color = layer.GetPixel(x, y);
                 var overlayColor = GetCorrespondingOverlayPixel(x, y);
-                if (overlayColor != null && overlayColor != Color.Transparent)
+                if (overlayColor != null && overlayColor.Value.A != 0)
                 {
                     color = color.Merge(overlayColor.Value);
                 }
@@ -226,6 +226,74 @@ public static class BitmapEditor
 
             return null;
         }
+    }
+
+    /// <summary>
+    /// Uses Top-Left anchor.
+    /// </summary>
+    public static Bitmap Overlay(Bitmap[] layers)
+    {
+        if (layers.Length == 0) throw new ArgumentException("No layers provided.", nameof(layers));
+        var maxWidth = layers.Max(l => l.Width);
+        var maxHeight = layers.Max(l => l.Height);
+        var canvas = new Bitmap(maxWidth, maxHeight);
+
+        for (int x = 0; x < canvas.Width; x++)
+        {
+            for (int y = 0; y < canvas.Height; y++)
+            {
+                Color? color = null;
+                foreach (var layer in layers)
+                {
+                    if (x < layer.Width && y < layer.Height)
+                    {
+                        var overlayColor = layer.GetPixel(x, y);
+                        if (color == null) color = overlayColor;
+                        else if (overlayColor.A != 0)
+                        {
+                            color = color.Value.Merge(overlayColor);
+                        }
+                    }
+                }
+                if (color != null) canvas.SetPixel(x, y, color.Value);
+            }
+        }
+
+        return canvas;
+    }
+
+    /// <summary>
+    /// Uses Center anchor.
+    /// </summary>
+    public static Bitmap Layer(Bitmap[] layers)
+    {
+        if (layers.Length == 0) throw new ArgumentException("No layers provided.", nameof(layers));
+        var maxWidth = layers.Max(l => l.Width);
+        var maxHeight = layers.Max(l => l.Height);
+        var canvas = new Bitmap(maxWidth, maxHeight);
+
+        for (int x = 0; x < canvas.Width; x++)
+        {
+            for (int y = 0; y < canvas.Height; y++)
+            {
+                foreach (var layer in layers.Reverse())
+                {
+                    var layerX = x - (canvas.Width - layer.Width) / 2;
+                    var layerY = y - (canvas.Height - layer.Height) / 2;
+                    if (layerX >= 0 && layerX < layer.Width && layerY >= 0 && layerY < layer.Height)
+                    {
+                        var color = layer.GetPixel(layerX, layerY);
+                        if (color.A != 0)
+                        {
+                            canvas.SetPixel(x, y, color);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        return canvas;
     }
 
     public static Bitmap Rotate(Bitmap img, double angleInDegrees)
