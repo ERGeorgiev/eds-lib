@@ -1,12 +1,36 @@
 ﻿using EdsLibrary.Enums;
 using EdsLibrary.Extensions;
+using System.Drawing.Imaging;
 
 namespace EdsLibrary.Utility;
 
-// 0,0 is top left
+// Note: 0,0 is top left
+// Note: Bitmap.Clone(..) is pretty fast.
 public static class BitmapEditor
 {
-    public static Bitmap Combine(Plane plane, params Bitmap[] b)
+    public static Bitmap Combine(Plane plane, params Bitmap[] bitmaps)
+    {
+        Bitmap canvas;
+        if (plane == Plane.Horizontal) 
+            canvas = new Bitmap(bitmaps.Sum(b => b.Width), bitmaps.Max(b => b.Height));
+        else 
+            canvas = new Bitmap(bitmaps.Max(b => b.Width), bitmaps.Sum(b => b.Height));
+
+        using Graphics g = Graphics.FromImage(canvas);
+        int offsetX = 0;
+        int offsetY = 0;
+        for (int i = 0; i < bitmaps.Length; i++)
+        {
+            var b = bitmaps[i];
+            g.DrawImage(b, new Rectangle(offsetX, offsetY, b.Width, b.Height));
+            if (plane == Plane.Horizontal) offsetX += b.Width;
+            else if (plane == Plane.Vertical) offsetY += b.Height;
+        }
+
+        return canvas;
+    }
+
+    public static Bitmap CombineOld(Plane plane, params Bitmap[] b)
     {
         var width = b[0].Width;
         var height = b[0].Height;
@@ -65,42 +89,43 @@ public static class BitmapEditor
         return newImg;
     }
 
-    public static Bitmap CanvasIncrement(Bitmap img, int top = 0, int bottom = 0, int left = 0, int right = 0)
+    public static Bitmap CanvasIncrement(Bitmap bmp, int top = 0, int bottom = 0, int left = 0, int right = 0)
     {
-        // Init
         var totalWidthIncrement = left + right;
         var totalHeightIncrement = top + bottom;
-        if (totalWidthIncrement <= -img.Width) throw new ArgumentOutOfRangeException("Total width increment cannot set the image to less than 1 pixel width.");
-        if (totalHeightIncrement <= -img.Height) throw new ArgumentOutOfRangeException("Total height increment cannot set the image to less than 1 pixel height.");
-        var newImg = new Bitmap(img.Width + totalWidthIncrement, img.Height + totalHeightIncrement);
-        if (left <= -img.Width || right <= -img.Width) return newImg;
-        if (top <= -img.Height || bottom <= -img.Height) return newImg;
+        if (totalWidthIncrement <= -bmp.Width) throw new ArgumentOutOfRangeException("Total width increment cannot set the image to less than 1 pixel width.");
+        if (totalHeightIncrement <= -bmp.Height) throw new ArgumentOutOfRangeException("Total height increment cannot set the image to less than 1 pixel height.");
+        var canvas = new Bitmap(bmp.Width + totalWidthIncrement, bmp.Height + totalHeightIncrement);
 
-        // X
-        var oldImgXStart = left < 0 ? Math.Abs(left) : 0;
-        var oldImgXEnd = img.Width + (right < 0 ? right : 0);
-        var newImgXStart = left > 0 ? left : 0;
+        var trimmedX = left < 0 ? Math.Abs(left) : 0;
+        var trimmedY = top < 0 ? Math.Abs(top) : 0;
+        var widthLoss = right < 0 ? Math.Abs(right) : 0;
+        var heightLoss = bottom < 0 ? Math.Abs(bottom) : 0;
+        var width = bmp.Width - trimmedX - widthLoss;
+        var height = bmp.Height - trimmedY - heightLoss;
+        var overlay = bmp.Clone(new Rectangle(trimmedX, trimmedY, width, height), bmp.PixelFormat);
 
-        // Y
-        var oldImgYStart = top < 0 ? Math.Abs(top) : 0;
-        var oldImgYEnd = img.Height + (bottom < 0 ? bottom : 0);
-        var newImgYStart = top > 0 ? top : 0;
+        using Graphics g = Graphics.FromImage(canvas);
+        int offsetX = left > 0 ? left : 0;
+        int offsetY = top > 0 ? top : 0;
+        g.DrawImage(overlay, new Rectangle(offsetX, offsetY, overlay.Width, overlay.Height));
 
-        for (int x = oldImgXStart; x < oldImgXEnd; x++)
+        return canvas;
+    }
+
+    public static Bitmap Overlay(params Bitmap[] layers)
+    {
+        if (layers.Length == 0) throw new ArgumentException("No layers provided.", nameof(layers));
+        Bitmap canvas = new(layers.Max(l => l.Width), layers.Max(l => l.Height));
+        using Graphics g = Graphics.FromImage(canvas);
+        foreach (Bitmap layer in layers)
         {
-            for (int y = oldImgYStart; y < oldImgYEnd; y++)
-            {
-                var pixelToWrite = img.GetPixel(x, y);
-                if (pixelToWrite.A != 0)
-                {
-                    var newX = x + newImgXStart - oldImgXStart;
-                    var newY = y + newImgYStart - oldImgYStart;
-                    newImg.SetPixel(newX, newY, pixelToWrite);
-                }
-            }
+            int offsetX = (canvas.Width - layer.Width) / 2;
+            int offsetY = (canvas.Height - layer.Height) / 2;
+            g.DrawImage(layer, offsetX, offsetY);
         }
 
-        return newImg;
+        return canvas;
     }
 
     public static Bitmap Move(Bitmap img, int offsetX, int offsetY)
@@ -123,18 +148,10 @@ public static class BitmapEditor
 
     public static Bitmap SetOpacity(Bitmap img, float opacity)
     {
-        var newImg = new Bitmap(img.Width, img.Height);
-
-        for (int x = 0; x < img.Width; x++)
-        {
-            for (int y = 0; y < img.Height; y++)
-            {
-                var pixel = img.GetPixel(x, y);
-                pixel = pixel.SetOpacity(opacity);
-                newImg.SetPixel(x, y, pixel);
-            }
-        }
-
+        var newImg = img.CloneBitmap();
+        var editor = new BitmapQuickEdit(newImg, ImageLockMode.WriteOnly);
+        editor.SetAlpha((byte)(255 * opacity));
+        editor.Lock();
         return newImg;
     }
 
@@ -226,74 +243,6 @@ public static class BitmapEditor
 
             return null;
         }
-    }
-
-    /// <summary>
-    /// Uses Top-Left anchor.
-    /// </summary>
-    public static Bitmap Overlay(Bitmap[] layers)
-    {
-        if (layers.Length == 0) throw new ArgumentException("No layers provided.", nameof(layers));
-        var maxWidth = layers.Max(l => l.Width);
-        var maxHeight = layers.Max(l => l.Height);
-        var canvas = new Bitmap(maxWidth, maxHeight);
-
-        for (int x = 0; x < canvas.Width; x++)
-        {
-            for (int y = 0; y < canvas.Height; y++)
-            {
-                Color? color = null;
-                foreach (var layer in layers)
-                {
-                    if (x < layer.Width && y < layer.Height)
-                    {
-                        var overlayColor = layer.GetPixel(x, y);
-                        if (color == null) color = overlayColor;
-                        else if (overlayColor.A != 0)
-                        {
-                            color = color.Value.Merge(overlayColor);
-                        }
-                    }
-                }
-                if (color != null) canvas.SetPixel(x, y, color.Value);
-            }
-        }
-
-        return canvas;
-    }
-
-    /// <summary>
-    /// Uses Center anchor.
-    /// </summary>
-    public static Bitmap Layer(Bitmap[] layers)
-    {
-        if (layers.Length == 0) throw new ArgumentException("No layers provided.", nameof(layers));
-        var maxWidth = layers.Max(l => l.Width);
-        var maxHeight = layers.Max(l => l.Height);
-        var canvas = new Bitmap(maxWidth, maxHeight);
-
-        for (int x = 0; x < canvas.Width; x++)
-        {
-            for (int y = 0; y < canvas.Height; y++)
-            {
-                foreach (var layer in layers.Reverse())
-                {
-                    var layerX = x - (canvas.Width - layer.Width) / 2;
-                    var layerY = y - (canvas.Height - layer.Height) / 2;
-                    if (layerX >= 0 && layerX < layer.Width && layerY >= 0 && layerY < layer.Height)
-                    {
-                        var color = layer.GetPixel(layerX, layerY);
-                        if (color.A != 0)
-                        {
-                            canvas.SetPixel(x, y, color);
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-
-        return canvas;
     }
 
     public static Bitmap Rotate(Bitmap img, double angleInDegrees)

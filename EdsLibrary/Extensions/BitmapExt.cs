@@ -17,6 +17,8 @@ public static partial class BitmapExt
     public static Bitmap Flip(this Bitmap img, Plane? plane = null) => BitmapEditor.Flip(img, plane);
     public static Bitmap Overlay(this Bitmap img, Bitmap overlay) => BitmapEditor.Overlay(img, overlay);
 
+    public static Bitmap CloneBitmap(this Bitmap bmp) => bmp.Clone(new Rectangle(0, 0, bmp.Width, bmp.Height), bmp.PixelFormat);
+
     /// <summary>
     /// Load an image from a file. Returns a blank fallback image on failure.
     /// </summary>
