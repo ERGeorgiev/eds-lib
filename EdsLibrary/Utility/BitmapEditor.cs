@@ -72,6 +72,21 @@ public static class BitmapEditor
         return canvas;
     }
 
+    public static Bitmap Overlay(params KeyValuePair<Bitmap, Point>[] layersAndOffset)
+    {
+        if (layersAndOffset.Length == 0) throw new ArgumentException("No layers provided.", nameof(layersAndOffset));
+        Bitmap canvas = new(layersAndOffset.Max(l => l.Key.Width + Math.Abs(l.Value.X)), layersAndOffset.Max(l => l.Key.Height + Math.Abs(l.Value.Y)));
+        using Graphics g = Graphics.FromImage(canvas);
+        foreach (var layer in layersAndOffset)
+        {
+            int offsetX = (canvas.Width - layer.Key.Width) / 2 + layer.Value.X;
+            int offsetY = (canvas.Height - layer.Key.Height) / 2 + layer.Value.Y;
+            g.DrawImage(layer.Key, offsetX, offsetY);
+        }
+
+        return canvas;
+    }
+
     public static Bitmap Move(Bitmap img, int offsetX, int offsetY)
     {
         var newImg = new Bitmap(img.Width, img.Height);
