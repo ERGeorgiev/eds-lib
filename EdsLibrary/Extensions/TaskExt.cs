@@ -22,12 +22,11 @@ public static partial class TaskExt
 
     public static async Task NewPeriodicAction(Action action, TimeSpan frequency, CancellationToken cancellationToken)
     {
-        var nextUpdate = DateTime.Now;
         try
         {
             while (cancellationToken.IsCancellationRequested == false)
             {
-                nextUpdate = DateTime.Now + frequency; // Better than nextUpdate + freq, because nextUpdate + freq can accumulate lost time.
+                var nextUpdate = DateTime.Now + frequency; // Better than nextUpdate + freq, because nextUpdate + freq can accumulate lost time.
                 action.Invoke();
                 var timeUntilNextUpdate = nextUpdate - DateTime.Now;
                 if (timeUntilNextUpdate.TotalMilliseconds < frequency.TotalMilliseconds / 2)
