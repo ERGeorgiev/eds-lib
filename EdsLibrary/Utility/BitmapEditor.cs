@@ -11,9 +11,9 @@ public static class BitmapEditor
     public static Bitmap Combine(Plane plane, params Bitmap[] bitmaps)
     {
         Bitmap canvas;
-        if (plane == Plane.Horizontal) 
+        if (plane == Plane.Horizontal)
             canvas = new Bitmap(bitmaps.Sum(b => b.Width), bitmaps.Max(b => b.Height));
-        else 
+        else
             canvas = new Bitmap(bitmaps.Max(b => b.Width), bitmaps.Sum(b => b.Height));
 
         using Graphics g = Graphics.FromImage(canvas);
@@ -30,64 +30,8 @@ public static class BitmapEditor
         return canvas;
     }
 
-    public static Bitmap CombineOld(Plane plane, params Bitmap[] b)
-    {
-        var width = b[0].Width;
-        var height = b[0].Height;
-        if (plane == Plane.Horizontal)
-        {
-            foreach (var bitmap in b)
-            {
-                if (bitmap.Size.Height != height)
-                {
-                    throw new ArgumentOutOfRangeException($"Bitmaps must be the same height to combine on Plane '{plane}'.");
-                }
-            }
-        }
-        if (plane == Plane.Vertical)
-        {
-            foreach (var bitmap in b)
-            {
-                if (bitmap.Size.Width != width)
-                {
-                    throw new ArgumentOutOfRangeException($"Bitmaps must be the same width to combine on Plane '{plane}'.");
-                }
-            }
-        }
-
-        Bitmap newImg;
-        if (plane == Plane.Horizontal)
-        {
-            newImg = new Bitmap(b.Sum(b => b.Width), height);
-        }
-        else
-        {
-            newImg = new Bitmap(width, b.Sum(b => b.Height));
-        }
-
-        var startX = 0;
-        var startY = 0;
-        foreach (var bitmap in b)
-        {
-            Add(newImg, bitmap, startX, startY);
-            if (plane == Plane.Horizontal) startX += bitmap.Size.Width;
-            if (plane == Plane.Vertical) startY += bitmap.Size.Height;
-        }
-
-        // 0,0 is top left
-        void Add(Bitmap canvas, Bitmap toAdd, int startX, int startY)
-        {
-            for (int x = 0; x < toAdd.Width; x++)
-            {
-                for (int y = 0; y < toAdd.Height; y++)
-                {
-                    canvas.SetPixel(x + startX, y + startY, toAdd.GetPixel(x, y));
-                }
-            }
-        }
-
-        return newImg;
-    }
+    public static Bitmap Scale(Bitmap bitmap, float scale) 
+        => new(bitmap, (int)Math.Round(bitmap.Width * scale), (int)Math.Round(bitmap.Height * scale));
 
     public static Bitmap CanvasIncrement(Bitmap bmp, int top = 0, int bottom = 0, int left = 0, int right = 0)
     {
@@ -146,13 +90,11 @@ public static class BitmapEditor
         return newImg;
     }
 
-    public static Bitmap SetOpacity(Bitmap img, float opacity)
+    public static void SetOpacity(Bitmap img, float percent)
     {
-        var newImg = img.CloneBitmap();
-        var editor = new BitmapQuickEdit(newImg, ImageLockMode.WriteOnly);
-        editor.SetAlpha((byte)(255 * opacity));
+        var editor = new BitmapQuickEdit(img, ImageLockMode.WriteOnly);
+        editor.SetOpacity(percent);
         editor.Lock();
-        return newImg;
     }
 
     public static Bitmap Transpose(Bitmap img, int offsetX, int offsetY)

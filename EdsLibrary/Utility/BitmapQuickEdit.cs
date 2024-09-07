@@ -1,9 +1,10 @@
-﻿using System.Drawing;
+﻿using EdsLibrary.Extensions;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 
 namespace EdsLibrary.Utility;
 
+// Note: argbValues is in format BGRA (Blue, Green, Red, Alpha)
 public class BitmapQuickEdit : IDisposable
 {
     private readonly Bitmap _bitmap;
@@ -62,6 +63,23 @@ public class BitmapQuickEdit : IDisposable
         catch
         {
             throw new ArgumentOutOfRangeException("x or y", "Pixel does not exist at the given x or y");
+        }
+    }
+
+    public void SetOpacity(float percent)
+    {
+        for (int i = 0; i < Values.Length; i += 4)
+        {
+            var currentA = Values[i + 3];
+            if (currentA > 0)
+            {
+                var newA = (byte)(255 * percent);
+                for (int j = 0; j < 3; j++)
+                {
+                    Values[i + j] = (byte)Math.Round(Values[i + j] / (float)currentA * newA).Limit(0, 255);
+                }
+                // Values[i + 3] = newA; // Seems like no need to adjust alpha when changing opacity.
+            }
         }
     }
 
