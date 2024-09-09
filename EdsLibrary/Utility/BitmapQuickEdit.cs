@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 namespace EdsLibrary.Utility;
 
-// Note: argbValues is in format BGRA (Blue, Green, Red, Alpha)
+// Note: argbValues is in format BGRA (Blue, Green, Red, Alpha) index 0 to 3.
 public class BitmapQuickEdit : IDisposable
 {
     private readonly Bitmap _bitmap;

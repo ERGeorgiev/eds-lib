@@ -9,6 +9,7 @@ namespace EdsLibrary.Extensions;
 public static partial class BitmapExt
 {
     public static Lazy<Bitmap> Blank = new(() => BitmapEditor.Generate(new Size(16, 16), Color.Magenta));
+    public static Lazy<Bitmap> Transparent = new(() => BitmapEditor.Generate(new Size(16, 16), Color.Transparent));
 
     public static Icon ToIcon(this Bitmap img) => Icon.FromHandle(img.GetHicon());
     public static Bitmap Move(this Bitmap img, int moveX, int moveY) => BitmapEditor.Move(img, moveX, moveY);
@@ -16,7 +17,6 @@ public static partial class BitmapExt
     public static Bitmap Rotate(this Bitmap img, double angle) => BitmapEditor.Rotate(img, angle);
     public static Bitmap Flip(this Bitmap img, Plane? plane = null) => BitmapEditor.Flip(img, plane);
     public static Bitmap Overlay(this Bitmap img, Bitmap overlay) => BitmapEditor.Overlay(img, overlay);
-
     public static Bitmap CloneBitmap(this Bitmap bmp) => bmp.Clone(new Rectangle(0, 0, bmp.Width, bmp.Height), bmp.PixelFormat);
 
     /// <summary>
