@@ -8,7 +8,7 @@ namespace EdsLibrary.Extensions;
 /// </summary>
 public static partial class BitmapExt
 {
-    public static Lazy<Bitmap> Blank = new(() => BitmapEditor.Generate(new Size(16, 16), Color.Magenta));
+    public static Lazy<Bitmap> Placeholder = new(() => BitmapEditor.Generate(new Size(16, 16), Color.Magenta));
     public static Lazy<Bitmap> Transparent = new(() => BitmapEditor.Generate(new Size(16, 16), Color.Transparent));
 
     public static Icon ToIcon(this Bitmap img) => Icon.FromHandle(img.GetHicon());
@@ -24,7 +24,7 @@ public static partial class BitmapExt
     /// </summary>
     public static Bitmap FromStreamSafe(Stream? stream)
     {
-        if (stream == null) return Blank.Value;
+        if (stream == null) return Placeholder.Value;
 
         try
         {
@@ -33,7 +33,7 @@ public static partial class BitmapExt
         catch (Exception e)
         {
             Logger.LogError($"Failed to load image from stream.", e);
-            return Blank.Value;
+            return Placeholder.Value;
         }
     }
 }
