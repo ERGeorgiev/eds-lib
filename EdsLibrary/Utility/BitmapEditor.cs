@@ -6,6 +6,7 @@ namespace EdsLibrary.Utility;
 
 // Note: 0,0 is top left
 // Note: Bitmap.Clone(..) is pretty fast.
+// ToDo: To test g.Draw vs SetPixel for a whole 16x16 bitmap to see which is faster and why and in which scenarios.
 public static class BitmapEditor
 {
     public static Bitmap Combine(Plane plane, params Bitmap[] bitmaps)
@@ -87,6 +88,7 @@ public static class BitmapEditor
         return canvas;
     }
 
+    [Obsolete("Not Optimized", error: false)] // Not optimized using BitmapQuickEdit or Graphics.DrawImage
     public static Bitmap Move(Bitmap img, int offsetX, int offsetY)
     {
         var newImg = new Bitmap(img.Width, img.Height);
@@ -112,6 +114,7 @@ public static class BitmapEditor
         editor.Lock();
     }
 
+    [Obsolete("Not Optimized", error: false)] // Not optimized using BitmapQuickEdit or Graphics.DrawImage
     public static Bitmap Transpose(Bitmap img, int offsetX, int offsetY)
     {
         var newImg = new Bitmap(img.Width, img.Height);
@@ -128,6 +131,7 @@ public static class BitmapEditor
         return newImg;
     }
 
+    [Obsolete("Not Optimized", error: false)] // Not optimized using BitmapQuickEdit or Graphics.DrawImage
     public static Bitmap[] ExtractSpreadsheet(Bitmap spreadsheet, Size singleImageSize)
     {
         if (singleImageSize.Width == 0 || singleImageSize.Height == 0)
@@ -168,6 +172,7 @@ public static class BitmapEditor
         return canvases.ToArray();
     }
 
+    [Obsolete("Not Optimized", error: false)] // Not optimized using BitmapQuickEdit or Graphics.DrawImage
     public static Bitmap Overlay(Bitmap layer, Bitmap overlay, CornerAnchor startingPosition = CornerAnchor.TopLeft)
     {
         var canvas = new Bitmap(layer.Width, layer.Height);
@@ -202,6 +207,7 @@ public static class BitmapEditor
         }
     }
 
+    [Obsolete("Not Optimized", error: false)] // Not optimized using BitmapQuickEdit or Graphics.DrawImage
     public static Bitmap Rotate(Bitmap img, double angleInDegrees)
     {
         Color?[,] newImgArray = new Color?[img.Width, img.Height];
@@ -303,6 +309,7 @@ public static class BitmapEditor
         }
     }
 
+    [Obsolete("Not Optimized", error: false)] // Not optimized using BitmapQuickEdit or Graphics.DrawImage
     public static Bitmap Flip(Bitmap img, Plane? plane = null)
     {
         var newImg = new Bitmap(img.Width, img.Height);
@@ -345,6 +352,7 @@ public static class BitmapEditor
     /// <summary>
     /// Generates a simple bitmap.
     /// </summary>
+    [Obsolete("Not Optimized", error: false)] // Not optimized using BitmapQuickEdit or Graphics.DrawImage
     public static Bitmap Generate(Size size, Color? color = null)
     {
         var newImg = new Bitmap(size.Width, size.Height);
@@ -364,6 +372,7 @@ public static class BitmapEditor
     }
 
     // ToDo: None of these methods are thread safe, as trying to GetPixel on Bitmap that is in use elsewhere throws and error.
+    [Obsolete("Not Optimized", error: false)] // Not optimized using BitmapQuickEdit or Graphics.DrawImage
     public static Bitmap Grayscale(Bitmap img)
     {
         var newImg = new Bitmap(img.Width, img.Height);

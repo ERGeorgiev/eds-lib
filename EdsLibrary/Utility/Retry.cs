@@ -39,6 +39,7 @@ public static class Retry
                 if (attempts == times)
                     throw;
 
+                // ToDo: Should use logger
                 ConsoleMenu.LogException(e);
                 Console.WriteLine($"Attempt {attempts}/{times}. Retry after delay {delayTime}");
 
@@ -71,6 +72,7 @@ public static class Retry
                 if (attempts == times)
                     throw;
 
+                // ToDo: Should use logger
                 ConsoleMenu.LogException(e);
                 Console.WriteLine($"Attempt {attempts}/{times}. Retry after delay {delayTime}");
 

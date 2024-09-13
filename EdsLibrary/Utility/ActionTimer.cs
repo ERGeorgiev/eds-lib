@@ -2,7 +2,7 @@
 
 namespace EdsLibrary;
 
-[Obsolete] // Unfinished
+[Obsolete("Unifinished")]
 public class ActionTimer : IDisposable
 {
     private ActionTimerElapsedEventHandler? onIntervalElapsed = null;
